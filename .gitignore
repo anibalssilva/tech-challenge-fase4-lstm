@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# OS / IDE
+.DS_Store
+.vscode/
+.idea/
+
+# Data
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Reports
+reports/*.png
+reports/*.csv
+
+# Colab checkpoints
+.ipynb_checkpoints/
+
+# Observação:
+# Para o Tech Challenge, os artefatos em models/ podem ser versionados
+# se ficarem pequenos o suficiente para o GitHub.
+# Se usar Git LFS ou storage externo, adapte o Dockerfile/startup.

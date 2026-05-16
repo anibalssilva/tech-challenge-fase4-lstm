@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: tech-challenge-lstm-stock-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: MODEL_DIR
+        value: /app/models
+      - key: DEFAULT_SEQUENCE_LENGTH
+        value: "60"
+      - key: LOG_LEVEL
+        value: INFO
