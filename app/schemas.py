@@ -56,3 +56,21 @@ class HealthResponse(BaseModel):
     model_file_exists: bool
     scaler_file_exists: bool
     metadata_file_exists: bool
+
+
+class PredictTickerFromYFinanceRequest(BaseModel):
+    start_date: str = Field(
+        default="2018-01-01",
+        description="Data inicial no formato YYYY-MM-DD.",
+    )
+    end_date: str | None = Field(
+        default=None,
+        description="Data final no formato YYYY-MM-DD. Se vazio, usa a data atual.",
+    )
+    n_future: int = Field(
+        default=1,
+        ge=1,
+        le=30,
+        description="Quantidade de dias futuros para prever.",
+    )
+
