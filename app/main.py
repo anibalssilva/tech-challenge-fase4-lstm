@@ -7,7 +7,13 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 
 from app.model_service import ModelNotReadyError, model_service
+from app.model_service import (
+    get_model_service_for_symbol,
+    list_available_model_symbols,
+    normalize_symbol,
+)
 from app.monitoring import metrics_store
+from app.schemas import PredictTickerFromYFinanceRequest
 from app.schemas import (
     HealthResponse,
     PredictFromYFinanceRequest,
@@ -128,3 +134,72 @@ def predict_from_yfinance(payload: PredictFromYFinanceRequest) -> dict[str, Any]
         return result
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+
+@app.get("/models")
+def available_models() -> dict:
+    return {
+        "available_models": list_available_model_symbols()
+    }
+
+
+@app.get("/models/{symbol}/health")
+def health_by_symbol(symbol: str) -> dict:
+    try:
+        clean_symbol = normalize_symbol(symbol)
+        service = get_model_service_for_symbol(clean_symbol)
+        files = service.files_status()
+
+        return {
+            "status": "ok",
+            "symbol": clean_symbol,
+            "model_loaded": service.is_loaded(),
+            "model_dir": str(service.model_dir),
+            **files,
+        }
+
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.get("/models/{symbol}/info")
+def model_info_by_symbol(symbol: str) -> dict:
+    try:
+        clean_symbol = normalize_symbol(symbol)
+        service = get_model_service_for_symbol(clean_symbol)
+        service.load()
+
+        return {
+            "symbol": clean_symbol,
+            "sequence_length": service.sequence_length,
+            "metadata": service.metadata,
+        }
+
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+
+@app.post("/predict/{symbol}/from-yfinance")
+def predict_by_symbol_from_yfinance(
+    symbol: str,
+    payload: PredictTickerFromYFinanceRequest,
+) -> dict:
+    try:
+        clean_symbol = normalize_symbol(symbol)
+        service = get_model_service_for_symbol(clean_symbol)
+
+        result = service.predict_from_yfinance(
+            symbol=clean_symbol,
+            start_date=payload.start_date,
+            end_date=payload.end_date,
+            n_future=payload.n_future,
+        )
+
+        metrics_store.register_prediction()
+
+        return result
+
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
