@@ -1,6 +1,7 @@
 import json
 import os
 from datetime import date
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -153,6 +154,52 @@ class ModelService:
         result["data_start_date"] = start_date
         result["data_end_date"] = final_date
         return result
+
+
+
+def normalize_symbol(symbol: str) -> str:
+    clean_symbol = symbol.strip().upper()
+
+    if not clean_symbol:
+        raise ValueError("Ticker não pode ser vazio.")
+
+    if "/" in clean_symbol or "\\" in clean_symbol:
+        raise ValueError("Ticker inválido.")
+
+    return clean_symbol
+
+
+MODEL_BASE_DIR = Path(os.getenv("MODEL_BASE_DIR", "models"))
+
+
+@lru_cache(maxsize=50)
+def get_model_service_for_symbol(symbol: str) -> ModelService:
+    clean_symbol = normalize_symbol(symbol)
+    model_dir = MODEL_BASE_DIR / clean_symbol
+
+    return ModelService(model_dir=str(model_dir))
+
+
+def list_available_model_symbols() -> list[str]:
+    if not MODEL_BASE_DIR.exists():
+        return []
+
+    symbols: list[str] = []
+
+    for item in MODEL_BASE_DIR.iterdir():
+        if not item.is_dir():
+            continue
+
+        required_files = [
+            item / "model.keras",
+            item / "scaler.pkl",
+            item / "metadata.json",
+        ]
+
+        if all(path.exists() for path in required_files):
+            symbols.append(item.name)
+
+    return sorted(symbols)
 
 
 model_service = ModelService()
