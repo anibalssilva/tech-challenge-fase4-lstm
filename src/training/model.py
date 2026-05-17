@@ -12,7 +12,7 @@ def build_lstm_model(
     model = Sequential(
         [
             Input(shape=(sequence_length, 1)),
-            LSTM(units=lstm_units, return_sequences=True),
+            LSTM(units=lstm_units, return_sequences=True, activation="tanh", recurrent_activation="sigmoid"),
             Dropout(dropout),
             LSTM(units=max(lstm_units // 2, 16), return_sequences=False),
             Dropout(dropout),
