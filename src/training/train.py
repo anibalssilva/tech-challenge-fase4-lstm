@@ -347,8 +347,10 @@ def main() -> None:
     best_activation = str(best_model_row["lstm_activation"])
     best_model = trained_models[best_activation]
 
+    pd.set_option("display.float_format", lambda x: f"{x:.8f}")
+    
     print("\nComparação dos modelos:")
-    print(metrics_df)
+    print(metrics_df.to_string(index=False))
 
     print("\nMelhor modelo escolhido pelo menor RMSE:")
     print(best_model_row)
