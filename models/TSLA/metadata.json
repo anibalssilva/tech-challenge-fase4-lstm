@@ -2,7 +2,7 @@
   "symbol": "TSLA",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-17T22:29:35.014749+00:00",
+  "trained_at_utc": "2026-05-17T22:44:04.882351+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
@@ -29,26 +29,26 @@
   "metrics": {
     "model": "lstm_tanh",
     "lstm_activation": "tanh",
-    "mae": 8.4121,
-    "rmse": 11.3414,
-    "mape": 3.913,
+    "mae": 8.4405,
+    "rmse": 11.3844,
+    "mape": 3.9221,
     "epochs_executed": 40
   },
   "all_models_metrics": [
     {
       "model": "lstm_tanh",
       "lstm_activation": "tanh",
-      "mae": 8.4121,
-      "rmse": 11.3414,
-      "mape": 3.913,
+      "mae": 8.4405,
+      "rmse": 11.3844,
+      "mape": 3.9221,
       "epochs_executed": 40
     },
     {
       "model": "lstm_relu",
       "lstm_activation": "relu",
-      "mae": 8.4411,
-      "rmse": 11.3819,
-      "mape": 3.923,
+      "mae": 8.4405,
+      "rmse": 11.3844,
+      "mape": 3.9221,
       "epochs_executed": 40
     }
   ],

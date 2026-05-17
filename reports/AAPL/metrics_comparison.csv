@@ -1,3 +1,3 @@
 model,lstm_activation,mae,rmse,mape,epochs_executed
-lstm_tanh,tanh,8.0551,10.3968,4.1794,11
-lstm_relu,relu,8.0549,10.3967,4.1793,11
+lstm_tanh,tanh,8.1126,10.4589,4.2096,11
+lstm_relu,relu,8.1126,10.4589,4.2096,11

@@ -2,7 +2,7 @@
   "symbol": "MSFT",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-17T22:27:50.092769+00:00",
+  "trained_at_utc": "2026-05-17T22:38:06.937605+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
@@ -23,32 +23,32 @@
     "tanh",
     "relu"
   ],
-  "best_model": "lstm_relu",
-  "best_activation": "relu",
+  "best_model": "lstm_tanh",
+  "best_activation": "tanh",
   "selection_metric": "rmse",
   "metrics": {
-    "model": "lstm_relu",
-    "lstm_activation": "relu",
-    "mae": 19.644,
-    "rmse": 23.2949,
-    "mape": 5.0431,
+    "model": "lstm_tanh",
+    "lstm_activation": "tanh",
+    "mae": 19.6754,
+    "rmse": 23.3405,
+    "mape": 5.05,
     "epochs_executed": 11
   },
   "all_models_metrics": [
     {
       "model": "lstm_tanh",
       "lstm_activation": "tanh",
-      "mae": 19.6441,
-      "rmse": 23.295,
-      "mape": 5.0432,
+      "mae": 19.6754,
+      "rmse": 23.3405,
+      "mape": 5.05,
       "epochs_executed": 11
     },
     {
       "model": "lstm_relu",
       "lstm_activation": "relu",
-      "mae": 19.644,
-      "rmse": 23.2949,
-      "mape": 5.0431,
+      "mae": 19.6754,
+      "rmse": 23.3405,
+      "mape": 5.05,
       "epochs_executed": 11
     }
   ],
