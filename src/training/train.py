@@ -148,12 +148,39 @@ def get_metric_value(metrics: dict, metric_name: str) -> float:
 
 
 def standardize_regression_metrics(metrics: dict) -> dict:
-    return {
-        "mae": get_metric_value(metrics, "mae"),
-        "rmse": get_metric_value(metrics, "rmse"),
-        "mape": get_metric_value(metrics, "mape"),
+    normalized_metrics = {
+        normalize_metric_key(key): float(value)
+        for key, value in metrics.items()
     }
 
+    mae = normalized_metrics.get("mae")
+    rmse = normalized_metrics.get("rmse")
+    mape = normalized_metrics.get("mape")
+
+    if mape is None:
+        mape = normalized_metrics.get("mape_percent")
+
+    if mae is None:
+        raise KeyError(
+            f"Métrica 'mae' não encontrada. Métricas disponíveis: {list(metrics.keys())}"
+        )
+
+    if rmse is None:
+        raise KeyError(
+            f"Métrica 'rmse' não encontrada. Métricas disponíveis: {list(metrics.keys())}"
+        )
+
+    if mape is None:
+        raise KeyError(
+            f"Métrica 'mape' ou 'mape_percent' não encontrada. "
+            f"Métricas disponíveis: {list(metrics.keys())}"
+        )
+
+    return {
+        "mae": mae,
+        "rmse": rmse,
+        "mape": mape,
+    }
 
 def make_json_safe(value: Any) -> Any:
     if isinstance(value, dict):
