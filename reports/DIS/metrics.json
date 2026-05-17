@@ -1,5 +1,8 @@
 {
-  "mae": 2.915,
-  "rmse": 3.6734,
-  "mape_percent": 3.1126
+  "model": "lstm_tanh",
+  "lstm_activation": "tanh",
+  "mae": 3.5295,
+  "rmse": 4.3999,
+  "mape": 3.8146,
+  "epochs_executed": 14
 }

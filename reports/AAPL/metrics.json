@@ -1,5 +1,8 @@
 {
-  "mae": 7.647,
-  "rmse": 10.1541,
-  "mape_percent": 3.9492
+  "model": "lstm_relu",
+  "lstm_activation": "relu",
+  "mae": 8.0549,
+  "rmse": 10.3967,
+  "mape": 4.1793,
+  "epochs_executed": 11
 }
