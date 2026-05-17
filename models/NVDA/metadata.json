@@ -2,7 +2,7 @@
   "symbol": "NVDA",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-17T22:40:32.228384+00:00",
+  "trained_at_utc": "2026-05-17T23:00:12.645931+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
@@ -29,26 +29,26 @@
   "metrics": {
     "model": "lstm_tanh",
     "lstm_activation": "tanh",
-    "mae": 4.5754,
-    "rmse": 6.8233,
-    "mape": 6.3104,
+    "mae": 4.6579,
+    "rmse": 6.9639,
+    "mape": 6.3851,
     "epochs_executed": 11
   },
   "all_models_metrics": [
     {
       "model": "lstm_tanh",
       "lstm_activation": "tanh",
-      "mae": 4.5754,
-      "rmse": 6.8233,
-      "mape": 6.3104,
+      "mae": 4.6579,
+      "rmse": 6.9639,
+      "mape": 6.3851,
       "epochs_executed": 11
     },
     {
       "model": "lstm_relu",
       "lstm_activation": "relu",
-      "mae": 4.5754,
-      "rmse": 6.8233,
-      "mape": 6.3104,
+      "mae": 5.6868,
+      "rmse": 8.0671,
+      "mape": 7.986,
       "epochs_executed": 11
     }
   ],

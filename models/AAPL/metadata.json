@@ -2,11 +2,11 @@
   "symbol": "AAPL",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-17T22:39:19.818098+00:00",
+  "trained_at_utc": "2026-05-17T22:59:23.342834+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
-  "epochs_executed": 11,
+  "epochs_executed": 9,
   "batch_size": 32,
   "lstm_units": 64,
   "dropout": 0.2,
@@ -23,33 +23,33 @@
     "tanh",
     "relu"
   ],
-  "best_model": "lstm_tanh",
-  "best_activation": "tanh",
+  "best_model": "lstm_relu",
+  "best_activation": "relu",
   "selection_metric": "rmse",
   "metrics": {
-    "model": "lstm_tanh",
-    "lstm_activation": "tanh",
-    "mae": 8.1126,
-    "rmse": 10.4589,
-    "mape": 4.2096,
-    "epochs_executed": 11
+    "model": "lstm_relu",
+    "lstm_activation": "relu",
+    "mae": 7.1916,
+    "rmse": 9.0314,
+    "mape": 3.7665,
+    "epochs_executed": 9
   },
   "all_models_metrics": [
     {
       "model": "lstm_tanh",
       "lstm_activation": "tanh",
-      "mae": 8.1126,
-      "rmse": 10.4589,
-      "mape": 4.2096,
+      "mae": 8.0551,
+      "rmse": 10.3969,
+      "mape": 4.1794,
       "epochs_executed": 11
     },
     {
       "model": "lstm_relu",
       "lstm_activation": "relu",
-      "mae": 8.1126,
-      "rmse": 10.4589,
-      "mape": 4.2096,
-      "epochs_executed": 11
+      "mae": 7.1916,
+      "rmse": 9.0314,
+      "mape": 3.7665,
+      "epochs_executed": 9
     }
   ],
   "tensorflow_version": "2.20.0",

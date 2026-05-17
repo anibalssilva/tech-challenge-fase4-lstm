@@ -2,11 +2,11 @@
   "symbol": "DIS",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-17T22:36:58.087634+00:00",
+  "trained_at_utc": "2026-05-17T22:57:50.689768+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
-  "epochs_executed": 16,
+  "epochs_executed": 29,
   "batch_size": 32,
   "lstm_units": 64,
   "dropout": 0.2,
@@ -23,33 +23,33 @@
     "tanh",
     "relu"
   ],
-  "best_model": "lstm_tanh",
-  "best_activation": "tanh",
+  "best_model": "lstm_relu",
+  "best_activation": "relu",
   "selection_metric": "rmse",
   "metrics": {
-    "model": "lstm_tanh",
-    "lstm_activation": "tanh",
-    "mae": 3.4988,
-    "rmse": 4.3882,
-    "mape": 3.811,
-    "epochs_executed": 16
+    "model": "lstm_relu",
+    "lstm_activation": "relu",
+    "mae": 2.8043,
+    "rmse": 3.5186,
+    "mape": 3.0105,
+    "epochs_executed": 29
   },
   "all_models_metrics": [
     {
       "model": "lstm_tanh",
       "lstm_activation": "tanh",
-      "mae": 3.4988,
-      "rmse": 4.3882,
-      "mape": 3.811,
-      "epochs_executed": 16
+      "mae": 3.5387,
+      "rmse": 4.4108,
+      "mape": 3.8259,
+      "epochs_executed": 14
     },
     {
       "model": "lstm_relu",
       "lstm_activation": "relu",
-      "mae": 3.4988,
-      "rmse": 4.3882,
-      "mape": 3.811,
-      "epochs_executed": 16
+      "mae": 2.8043,
+      "rmse": 3.5186,
+      "mape": 3.0105,
+      "epochs_executed": 29
     }
   ],
   "tensorflow_version": "2.20.0",
