@@ -8,6 +8,7 @@ def build_lstm_model(
     lstm_units: int = 64,
     dropout: float = 0.2,
     learning_rate: float = 0.001,
+    lstm_activation: str = "tanh",
 ) -> Sequential:
     model = Sequential(
         [
