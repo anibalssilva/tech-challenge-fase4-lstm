@@ -1,46 +1,20 @@
 # Tech Challenge Fase 4 — LSTM Stock Price Prediction API
 
-Projeto completo para o **Tech Challenge Fase 4 — Machine Learning Engineering**.
+Projeto para o **Tech Challenge Fase 4 — Machine Learning Engineering**.
 
-O objetivo é treinar uma rede neural **LSTM** para prever o preço de fechamento de uma ação e publicar o modelo em uma **API REST com FastAPI**, pronta para deploy no **Render** via repositório GitHub.
+Treina redes neurais **LSTM** para prever o preço de fechamento de ações e serve os modelos via **API REST com FastAPI**, com suporte a múltiplos tickers.
 
 > Fluxo principal: **Google Colab → GitHub → Render**
 
 ---
 
-## 1. O que este projeto entrega
-
-- Coleta de dados históricos via `yfinance`
-- Pré-processamento da série temporal de fechamento (`Close`)
-- Treinamento de modelo LSTM
-- Avaliação com MAE, RMSE e MAPE
-- Salvamento dos artefatos de inferência:
-  - `models/model.keras`
-  - `models/scaler.pkl`
-  - `models/metadata.json`
-- API RESTful com FastAPI
-- Endpoint para previsão usando lista de preços históricos
-- Endpoint opcional para previsão usando Yahoo Finance
-- Monitoramento simples de:
-  - quantidade de requisições
-  - quantidade de predições
-  - erros
-  - tempo médio de resposta
-  - uso de CPU e memória
-- Dockerfile para deploy
-- `render.yaml` para deploy por Blueprint
-- Notebook para desenvolvimento no Google Colab
-- Scripts de treino, execução local, teste e GitHub push
-
----
-
-## 2. Arquitetura
+## Arquitetura
 
 ```text
 Google Colab
    |
-   | 1. Treina modelo LSTM
-   | 2. Gera artefatos em /models
+   | 1. Treina modelo LSTM (por ticker)
+   | 2. Gera artefatos em models/<TICKER>/
    | 3. Faz commit/push para GitHub
    v
 GitHub Repository
@@ -57,15 +31,15 @@ Usuário / Avaliador
 
 ---
 
-## 3. Estrutura do projeto
+## Estrutura do projeto
 
 ```text
-tech-challenge-fase4-lstm-stock-api/
+tech-challenge-fase4-lstm/
 ├── app/
-│   ├── main.py
-│   ├── model_service.py
-│   ├── monitoring.py
-│   └── schemas.py
+│   ├── main.py            # API FastAPI
+│   ├── model_service.py   # Carregamento e inferência dos modelos
+│   ├── monitoring.py      # Métricas de monitoramento
+│   └── schemas.py         # Schemas Pydantic
 ├── src/
 │   └── training/
 │       ├── config.py
@@ -73,166 +47,123 @@ tech-challenge-fase4-lstm-stock-api/
 │       ├── metrics.py
 │       ├── model.py
 │       └── train.py
-├── notebooks/
-│   └── 01_train_lstm_colab.ipynb
-├── scripts/
-│   ├── train_model.sh
-│   ├── run_api_local.sh
-│   ├── test_api.sh
-│   └── git_push_from_colab.sh
-├── docs/
-│   ├── 01_colab_development.md
-│   ├── 02_github_repository.md
-│   ├── 03_render_deploy.md
-│   ├── 04_api_usage.md
-│   ├── 05_monitoring.md
-│   └── 06_video_script.md
+├── models/
+│   ├── AAPL/
+│   ├── DIS/
+│   ├── MSFT/
+│   ├── NVDA/
+│   └── TSLA/
+│       ├── model.keras
+│       ├── model_relu.keras
+│       ├── model_tanh.keras
+│       ├── scaler.pkl
+│       └── metadata.json
+├── reports/
+│   └── <TICKER>/          # Métricas, gráficos e predições por ticker
 ├── examples/
 │   ├── predict_request.json
 │   └── predict_from_yfinance_request.json
-├── models/
-│   └── .gitkeep
-├── reports/
-│   └── .gitkeep
 ├── Dockerfile
-├── render.yaml
 ├── requirements.txt
-├── requirements-dev.txt
 └── README.md
 ```
 
 ---
 
-## 4. Como usar no Google Colab
+## Como usar no Google Colab
 
-Abra o notebook:
-
-```text
-notebooks/01_train_lstm_colab.ipynb
+```python
+!git clone https://<SEU_TOKEN>@github.com/anibalssilva/tech-challenge-fase4-lstm.git
+%cd tech-challenge-fase4-lstm
+!pip install -r requirements.txt
 ```
 
-No Colab, execute as células para:
+### Treinar um modelo
 
-1. Clonar seu repositório GitHub
-2. Instalar dependências
-3. Treinar o modelo LSTM
-4. Testar a API
-5. Fazer commit e push dos artefatos gerados
-
-Treino padrão:
-
-```bash
-python -m src.training.train \
-  --symbol DIS \
-  --start-date 2018-01-01 \
-  --end-date 2024-07-20 \
-  --sequence-length 60 \
-  --epochs 40 \
-  --batch-size 32 \
-  --model-dir models
+```python
+!python -m src.training.train --symbol DIS --start-date 2018-01-01 --end-date 2024-07-20 --sequence-length 60 --epochs 40 --batch-size 32 --model-dir models
 ```
 
-Você pode trocar `DIS` por outra ação, por exemplo:
+Tickers disponíveis: `AAPL`, `DIS`, `MSFT`, `NVDA`, `TSLA` (ou qualquer ticker válido do Yahoo Finance).
 
-- `AAPL`
-- `MSFT`
-- `GOOGL`
-- `TSLA`
-- `PETR4.SA`
-- `VALE3.SA`
+### Rodar a API
+
+```python
+!uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+```
 
 ---
 
-## 5. Como rodar a API localmente
-
-Depois de treinar e gerar os arquivos em `models/`:
+## Como rodar localmente
 
 ```bash
+pip install -r requirements.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8000
 ```
 
-Ou use o script:
-
-```bash
-bash scripts/run_api_local.sh
-```
-
-Acesse:
-
-```text
-http://localhost:8000/docs
-```
+Acesse: http://localhost:8000/docs
 
 ---
 
-## 6. Exemplo de chamada da API
+## Endpoints da API
 
-### Health check
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/` | Informações gerais |
+| GET | `/health` | Status da API e do modelo padrão |
+| GET | `/model-info` | Metadados do modelo padrão |
+| GET | `/metrics` | Métricas de monitoramento (requests, erros, latência, CPU, memória) |
+| GET | `/models` | Lista tickers com modelos disponíveis |
+| GET | `/models/{symbol}/health` | Status do modelo de um ticker específico |
+| GET | `/models/{symbol}/info` | Metadados do modelo de um ticker |
+| POST | `/predict` | Previsão a partir de lista de preços históricos |
+| POST | `/predict/from-yfinance` | Previsão usando dados do Yahoo Finance |
+| POST | `/predict/{symbol}/from-yfinance` | Previsão por ticker usando Yahoo Finance |
+
+---
+
+## Exemplos de chamada
 
 ```bash
+# Health check
 curl http://localhost:8000/health
-```
 
-### Previsão usando lista de preços
+# Listar modelos disponíveis
+curl http://localhost:8000/models
 
-```bash
+# Previsão com Yahoo Finance para um ticker específico
+curl -X POST "http://localhost:8000/predict/AAPL/from-yfinance" \
+  -H "Content-Type: application/json" \
+  -d '{"start_date": "2024-01-01", "end_date": "2024-07-20", "n_future": 5}'
+
+# Previsão com lista de preços
 curl -X POST "http://localhost:8000/predict" \
   -H "Content-Type: application/json" \
   -d @examples/predict_request.json
 ```
 
-### Previsão usando Yahoo Finance
+---
 
-```bash
-curl -X POST "http://localhost:8000/predict/from-yfinance" \
-  -H "Content-Type: application/json" \
-  -d @examples/predict_from_yfinance_request.json
-```
+## Deploy no Render
+
+1. Conecte o repositório GitHub no Render
+2. Crie um novo **Web Service**
+3. Selecione **Docker** como ambiente
+4. Deploy
 
 ---
 
-## 7. Deploy no Render
+## Monitoramento
 
-Opção recomendada:
-
-1. Crie um repositório no GitHub
-2. Faça push deste projeto
-3. Treine o modelo no Colab
-4. Faça commit/push dos arquivos gerados em `models/`
-5. No Render, crie um novo **Web Service**
-6. Conecte seu repositório GitHub
-7. Use Docker
-8. Deploy
-
-O projeto também contém `render.yaml`, então você pode usar **Blueprint**.
+O endpoint `/metrics` retorna:
+- Total de requisições
+- Total de predições
+- Quantidade de erros
+- Tempo médio de resposta (ms)
+- Uso de CPU e memória
 
 ---
 
-## 8. Endpoints da API
+## Observação
 
-| Método | Endpoint | Descrição |
-|---|---|---|
-| GET | `/` | Informações gerais |
-| GET | `/health` | Status da API e do modelo |
-| GET | `/model-info` | Metadados do modelo treinado |
-| GET | `/metrics` | Métricas simples de monitoramento |
-| POST | `/predict` | Previsão a partir de preços históricos informados |
-| POST | `/predict/from-yfinance` | Previsão a partir de dados baixados via Yahoo Finance |
-
----
-
-## 9. Observação importante sobre previsão financeira
-
-Este projeto tem finalidade acadêmica. A previsão de ações com LSTM é útil para demonstrar engenharia de machine learning, séries temporais e deploy de modelos, mas não deve ser usada como recomendação financeira.
-
----
-
-## 10. Checklist de entrega
-
-- [ ] Código-fonte no GitHub
-- [ ] Notebook executado no Google Colab
-- [ ] Modelo treinado salvo em `models/`
-- [ ] API funcionando localmente ou no Colab
-- [ ] API publicada no Render
-- [ ] Link da API em produção
-- [ ] Vídeo explicando coleta, treino, avaliação, API, deploy e monitoramento
+Este projeto tem finalidade acadêmica. Não deve ser usado como recomendação financeira.
