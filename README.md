@@ -14,6 +14,7 @@ Fluxo: **Colab (treino) → GitHub → Render (deploy)**
 ├── models/<TICKER>/      # Artefatos por ticker (model.keras, scaler.pkl, metadata.json)
 ├── reports/<TICKER>/     # Métricas e gráficos gerados no treino
 ├── examples/             # JSONs de exemplo para testar a API
+├── mlops/                # MLflow tracking + Evidently drift detection
 ├── Dockerfile
 ├── requirements.txt
 ```
@@ -85,6 +86,39 @@ curl -X POST "http://localhost:8000/predict/AAPL/from-yfinance" \
 ## Deploy no Render
 
 Conecta o repo no Render, seleciona Docker, deploy. Pronto.
+
+---
+
+## MLOps — Tracking e Drift Detection
+
+Camada de observabilidade adicionada ao projeto. Stack: **MLflow** (tracking + Model Registry) e **Evidently AI** (data drift).
+
+Permite versionar modelos, registrar métricas de cada treino e detectar mudanças na distribuição dos dados ao longo do tempo — fundamentos pra operar modelos de ML em produção.
+
+### Setup
+
+```bash
+pip install -r requirements-monitoring.txt
+mlflow ui --backend-store-uri file:./mlruns --port 5000
+```
+
+UI em http://localhost:5000
+
+### Notebooks
+
+| Notebook | O que faz |
+|----------|-----------|
+| `mlops/notebooks/evaluate_and_track.ipynb` | Loga modelos `lstm_relu` e `lstm_tanh` no MLflow, registra o melhor como `stock-lstm-AAPL` v1 em Production |
+| `mlops/notebooks/drift_detection.ipynb` | Compara distribuição do treino vs teste, gera HTML report do Evidently, loga no MLflow |
+
+Ordem de execução: `evaluate_and_track` → `drift_detection`.
+
+### Resultado (AAPL)
+
+- 2 runs no experiment `stock-lstm-AAPL` com params, metrics e artifacts
+- Modelo registrado em Production no Model Registry
+- Data drift detectado entre período de treino (~$42-$170) e teste (~$170-$235)
+- Métrica adicional `Directional Accuracy` calculada (% acerto da direção do movimento — relevante em trading)
 
 ---
 
