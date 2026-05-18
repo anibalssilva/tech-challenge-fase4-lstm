@@ -36,3 +36,12 @@ render.yaml
 requirements-dev.txt
 tests/
 tech-challenge-fase4-lstm/
+
+# Caio's MLOps work
+mlruns/
+mlops/data/*.parquet
+mlops/reports/evidently_*.html
+mlops/reports/nannyml_*.html
+
+# Override: reinclui notebooks dentro de mlops/ (ignora a regra global notebooks/)
+!mlops/notebooks/
