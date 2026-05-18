@@ -37,7 +37,7 @@ requirements-dev.txt
 tests/
 tech-challenge-fase4-lstm/
 
-# Caio's MLOps work
+# Dados e relatórios gerados pelo mlops
 mlruns/
 mlops/data/*.parquet
 mlops/reports/evidently_*.html
