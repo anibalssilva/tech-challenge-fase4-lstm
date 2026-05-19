@@ -2,7 +2,7 @@
   "symbol": "AAPL",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-19T16:38:58.882643+00:00",
+  "trained_at_utc": "2026-05-19T21:05:04.181758+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
@@ -29,26 +29,26 @@
   "metrics": {
     "model": "lstm_relu",
     "lstm_activation": "relu",
-    "mae": 7.1889,
-    "rmse": 9.0281,
-    "mape": 3.7651,
+    "mae": 7.191,
+    "rmse": 9.0305,
+    "mape": 3.7662,
     "epochs_executed": 9
   },
   "all_models_metrics": [
     {
       "model": "lstm_tanh",
       "lstm_activation": "tanh",
-      "mae": 8.0564,
-      "rmse": 10.3983,
-      "mape": 4.1801,
+      "mae": 8.0542,
+      "rmse": 10.3959,
+      "mape": 4.1789,
       "epochs_executed": 11
     },
     {
       "model": "lstm_relu",
       "lstm_activation": "relu",
-      "mae": 7.1889,
-      "rmse": 9.0281,
-      "mape": 3.7651,
+      "mae": 7.191,
+      "rmse": 9.0305,
+      "mape": 3.7662,
       "epochs_executed": 9
     }
   ],
