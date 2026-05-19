@@ -4,7 +4,7 @@ import time
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 
 from app.model_service import ModelNotReadyError, model_service
 from app.model_service import (
@@ -80,7 +80,49 @@ def root() -> dict[str, str]:
         "docs": "/docs",
         "health": "/health",
         "metrics": "/metrics",
+        "dashboard": "/dashboard",
     }
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard():
+    return """<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>LSTM API - Dashboard</title>
+<style>
+body{font-family:system-ui;background:#1a1a2e;color:#eee;margin:0;padding:20px}
+h1{text-align:center;color:#0ff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;max-width:900px;margin:20px auto}
+.card{background:#16213e;border-radius:12px;padding:20px;text-align:center;border:1px solid #0f3460}
+.card .value{font-size:2rem;font-weight:bold;color:#0ff;margin:8px 0}
+.card .label{font-size:.85rem;color:#aaa;text-transform:uppercase}
+#status{text-align:center;font-size:.8rem;color:#666;margin-top:20px}
+</style></head><body>
+<h1>📊 LSTM API Monitoring</h1>
+<div class="grid" id="cards"></div>
+<div id="status">Carregando...</div>
+<script>
+async function refresh(){
+ try{
+  const r=await fetch('/metrics');const d=await r.json();
+  const items=[
+   ['Uptime',formatUptime(d.uptime_seconds)],
+   ['Requests',d.request_count],
+   ['Predictions',d.prediction_count],
+   ['Errors',d.error_count],
+   ['Avg Latency',d.avg_latency_ms+' ms'],
+   ['Last Latency',d.last_latency_ms+' ms'],
+   ['CPU',d.cpu_percent+'%'],
+   ['Memory',d.memory_mb+' MB']
+  ];
+  document.getElementById('cards').innerHTML=items.map(([l,v])=>
+   `<div class="card"><div class="label">${l}</div><div class="value">${v}</div></div>`
+  ).join('');
+  document.getElementById('status').textContent='Atualizado: '+new Date().toLocaleTimeString();
+ }catch(e){document.getElementById('status').textContent='Erro: '+e.message}
+}
+function formatUptime(s){const h=Math.floor(s/3600);const m=Math.floor((s%3600)/60);return h+'h '+m+'m'}
+refresh();setInterval(refresh,5000);
+</script></body></html>"""
 
 
 @app.get("/health", response_model=HealthResponse)
