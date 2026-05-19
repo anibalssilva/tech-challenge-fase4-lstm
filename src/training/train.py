@@ -277,7 +277,7 @@ def main() -> None:
             epochs=args.epochs,
             batch_size=args.batch_size,
             callbacks=create_callbacks(),
-            verbose=1,
+            verbose=0,
         )
 
         print(f"\nAvaliando modelo: {model_name}")
