@@ -2,7 +2,7 @@
   "symbol": "MSFT",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-17T22:58:39.003423+00:00",
+  "trained_at_utc": "2026-05-19T16:38:13.543172+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
@@ -29,9 +29,9 @@
   "metrics": {
     "model": "lstm_relu",
     "lstm_activation": "relu",
-    "mae": 12.6505,
-    "rmse": 15.15,
-    "mape": 3.4689,
+    "mae": 12.6515,
+    "rmse": 15.1511,
+    "mape": 3.4692,
     "epochs_executed": 10
   },
   "all_models_metrics": [
@@ -39,16 +39,16 @@
       "model": "lstm_tanh",
       "lstm_activation": "tanh",
       "mae": 19.6433,
-      "rmse": 23.2941,
+      "rmse": 23.2942,
       "mape": 5.0429,
       "epochs_executed": 11
     },
     {
       "model": "lstm_relu",
       "lstm_activation": "relu",
-      "mae": 12.6505,
-      "rmse": 15.15,
-      "mape": 3.4689,
+      "mae": 12.6515,
+      "rmse": 15.1511,
+      "mape": 3.4692,
       "epochs_executed": 10
     }
   ],
