@@ -1,0 +1,8 @@
+{
+  "model": "lstm_relu",
+  "lstm_activation": "relu",
+  "mae": 6.2358,
+  "rmse": 7.5769,
+  "mape": 3.3333,
+  "epochs_executed": 21
+}

@@ -12,7 +12,7 @@
     "lstm_activation": "relu",
     "mae": 7.1941,
     "rmse": 9.034,
-    "mape": 3.7679,
+    "mape": 3.7678,
     "epochs_executed": 9
   }
 ]
