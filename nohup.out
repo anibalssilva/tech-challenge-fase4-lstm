@@ -1,0 +1,15 @@
+[2026-05-20 02:16:51 +0000] [62407] [INFO] Starting gunicorn 23.0.0
+[2026-05-20 02:16:51 +0000] [62407] [INFO] Listening at: http://127.0.0.1:5000 (62407)
+[2026-05-20 02:16:51 +0000] [62407] [INFO] Using worker: sync
+[2026-05-20 02:16:51 +0000] [62408] [INFO] Booting worker with pid: 62408
+[2026-05-20 02:16:51 +0000] [62409] [INFO] Booting worker with pid: 62409
+[2026-05-20 02:16:51 +0000] [62410] [INFO] Booting worker with pid: 62410
+[2026-05-20 02:16:51 +0000] [62411] [INFO] Booting worker with pid: 62411
+
+[2026-05-20 02:17:31 +0000] [62407] [INFO] Handling signal: int
+Aborted!
+[2026-05-20 02:17:31 +0000] [62410] [INFO] Worker exiting (pid: 62410)
+[2026-05-20 02:17:31 +0000] [62411] [INFO] Worker exiting (pid: 62411)
+[2026-05-20 02:17:31 +0000] [62408] [INFO] Worker exiting (pid: 62408)
+[2026-05-20 02:17:31 +0000] [62409] [INFO] Worker exiting (pid: 62409)
+[2026-05-20 02:17:31 +0000] [62407] [INFO] Shutting down: Master
