@@ -122,13 +122,13 @@ def health() -> dict[str, Any]:
     }
 
 
-@app.get("/model-info")
-def model_info() -> dict[str, Any]:
-    model_service.load()
-    return {
-        "sequence_length": model_service.sequence_length,
-        "metadata": model_service.metadata,
-    }
+# @app.get("/model-info")
+# def model_info() -> dict[str, Any]:
+#     model_service.load()
+#     return {
+#         "sequence_length": model_service.sequence_length,
+#         "metadata": model_service.metadata,
+#     }
 
 
 @app.get("/metrics")
@@ -147,32 +147,32 @@ def dashboard() -> str:
     return html_path.read_text(encoding="utf-8")
 
 
-@app.post("/predict", response_model=PredictResponse)
-def predict(payload: PredictRequest) -> dict[str, Any]:
-    try:
-        result = model_service.predict_from_prices(
-            prices=payload.prices,
-            n_future=payload.n_future,
-        )
-        metrics_store.register_prediction()
-        return result
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+# @app.post("/predict", response_model=PredictResponse)
+# def predict(payload: PredictRequest) -> dict[str, Any]:
+#     try:
+#         result = model_service.predict_from_prices(
+#             prices=payload.prices,
+#             n_future=payload.n_future,
+#         )
+#         metrics_store.register_prediction()
+#         return result
+#     except ValueError as exc:
+#         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-@app.post("/predict/from-yfinance")
-def predict_from_yfinance(payload: PredictFromYFinanceRequest) -> dict[str, Any]:
-    try:
-        result = model_service.predict_from_yfinance(
-            symbol=payload.symbol,
-            start_date=payload.start_date,
-            end_date=payload.end_date,
-            n_future=payload.n_future,
-        )
-        metrics_store.register_prediction()
-        return result
-    except ValueError as exc:
-        raise HTTPException(status_code=400, detail=str(exc)) from exc
+# @app.post("/predict/from-yfinance")
+# def predict_from_yfinance(payload: PredictFromYFinanceRequest) -> dict[str, Any]:
+#     try:
+#         result = model_service.predict_from_yfinance(
+#             symbol=payload.symbol,
+#             start_date=payload.start_date,
+#             end_date=payload.end_date,
+#             n_future=payload.n_future,
+#         )
+#         metrics_store.register_prediction()
+#         return result
+#     except ValueError as exc:
+#         raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 
