@@ -1,9 +1,12 @@
 import os
 import time
+from collections import deque
 from threading import Lock
 from typing import Any
 
 import psutil
+
+_MAX_HISTORY = 120  # ~1 hora a 30s de intervalo
 
 
 class MetricsStore:
@@ -15,6 +18,7 @@ class MetricsStore:
         self.error_count = 0
         self.total_latency_ms = 0.0
         self.last_latency_ms = 0.0
+        self._history: deque = deque(maxlen=_MAX_HISTORY)
 
     def register_request(self, latency_ms: float, is_error: bool = False) -> None:
         with self._lock:
@@ -46,6 +50,16 @@ class MetricsStore:
                 "cpu_percent": process.cpu_percent(interval=None),
                 "memory_mb": round(process.memory_info().rss / 1024 / 1024, 2),
             }
+
+    def record_snapshot(self) -> None:
+        point = self.snapshot()
+        point["ts"] = time.time()
+        with self._lock:
+            self._history.append(point)
+
+    def history(self) -> list[dict[str, Any]]:
+        with self._lock:
+            return list(self._history)
 
 
 metrics_store = MetricsStore()

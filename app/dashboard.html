@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LSTM API — Monitoring</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    header {
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      padding: 14px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 1rem; font-weight: 600; color: #f1f5f9; letter-spacing: -0.01em; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #14532d; color: #86efac;
+      border-radius: 9999px; padding: 4px 14px; font-size: 0.78rem; font-weight: 600;
+    }
+    .pill .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #4ade80; animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:.3 } }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 28px 32px; }
+    .section-label {
+      font-size: 0.7rem; font-weight: 700; color: #64748b;
+      text-transform: uppercase; letter-spacing: .12em; margin-bottom: 14px;
+    }
+
+    /* ── Cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 900px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 560px) { .cards { grid-template-columns: repeat(2, 1fr); } }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 18px 20px;
+      border-top-width: 3px;
+    }
+    .card.blue   { border-top-color: #3b82f6; }
+    .card.green  { border-top-color: #22c55e; }
+    .card.cyan   { border-top-color: #06b6d4; }
+    .card.red    { border-top-color: #ef4444; }
+    .card.yellow { border-top-color: #eab308; }
+    .card.purple { border-top-color: #a855f7; }
+
+    .card .label { font-size: 0.72rem; color: #94a3b8; margin-bottom: 8px; }
+    .card .value { font-size: 1.65rem; font-weight: 700; color: #f1f5f9; line-height: 1; }
+    .card .sub   { font-size: 0.7rem; color: #475569; margin-top: 5px; }
+
+    /* ── Charts ── */
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 700px) { .charts { grid-template-columns: 1fr; } }
+
+    .chart-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .chart-card h3 { font-size: 0.8rem; color: #94a3b8; margin-bottom: 14px; font-weight: 500; }
+    .chart-card canvas { max-height: 180px; }
+
+    /* ── Ticker table ── */
+    .table-wrap {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 32px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: #0f172a;
+      color: #64748b;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 11px 18px;
+      text-align: left;
+      font-weight: 600;
+    }
+    tbody td {
+      padding: 12px 18px;
+      border-top: 1px solid #334155;
+      font-size: 0.875rem;
+      color: #cbd5e1;
+    }
+    tbody tr:hover { background: #263147; }
+    .badge {
+      display: inline-block; padding: 2px 10px;
+      border-radius: 9999px; font-size: 0.72rem; font-weight: 600;
+    }
+    .badge-ok  { background: #14532d; color: #86efac; }
+    .badge-err { background: #450a0a; color: #fca5a5; }
+
+    footer {
+      text-align: center; color: #334155;
+      font-size: 0.72rem; padding: 20px 0 32px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>LSTM Stock API &mdash; Monitoring Dashboard</h1>
+  <span class="pill"><span class="dot"></span>Online</span>
+</header>
+
+<div class="container">
+
+  <div class="section-label" style="margin-top:4px">
+    Métricas em Tempo Real &mdash; <span id="last-update" style="color:#94a3b8">—</span>
+  </div>
+
+  <div class="cards">
+    <div class="card blue">
+      <div class="label">Uptime</div>
+      <div class="value" id="uptime">—</div>
+      <div class="sub">hh:mm:ss</div>
+    </div>
+    <div class="card green">
+      <div class="label">Requests</div>
+      <div class="value" id="requests">—</div>
+      <div class="sub">total acumulado</div>
+    </div>
+    <div class="card cyan">
+      <div class="label">Predições</div>
+      <div class="value" id="predictions">—</div>
+      <div class="sub">total acumulado</div>
+    </div>
+    <div class="card red">
+      <div class="label">Erros</div>
+      <div class="value" id="errors">—</div>
+      <div class="sub">respostas 4xx/5xx</div>
+    </div>
+    <div class="card yellow">
+      <div class="label">Lat. Média</div>
+      <div class="value" id="avg-latency">—</div>
+      <div class="sub">ms por request</div>
+    </div>
+    <div class="card purple">
+      <div class="label">Memória</div>
+      <div class="value" id="memory">—</div>
+      <div class="sub">MB (processo)</div>
+    </div>
+  </div>
+
+  <div class="section-label">Histórico (últimos snapshots — intervalo 30s)</div>
+  <div class="charts">
+    <div class="chart-card">
+      <h3>Latência Média (ms)</h3>
+      <canvas id="chart-latency"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>CPU (%)</h3>
+      <canvas id="chart-cpu"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Memória (MB)</h3>
+      <canvas id="chart-memory"></canvas>
+    </div>
+    <div class="chart-card">
+      <h3>Requests acumulados</h3>
+      <canvas id="chart-requests"></canvas>
+    </div>
+  </div>
+
+  <div class="section-label">Modelos Disponíveis</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Status</th>
+          <th>MAE</th>
+          <th>RMSE</th>
+          <th>MAPE</th>
+          <th>Melhor Modelo</th>
+          <th>Treinado Em</th>
+        </tr>
+      </thead>
+      <tbody id="tickers-body">
+        <tr><td colspan="7" style="color:#475569;padding:24px;text-align:center">Carregando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<footer>Atualiza automaticamente a cada 15 segundos &bull; Tech Challenge Fase 4</footer>
+
+<script>
+  const CHART_DEFAULTS = {
+    responsive: true,
+    maintainAspectRatio: true,
+    animation: false,
+    plugins: { legend: { display: false }, tooltip: {
+      backgroundColor: '#1e293b', titleColor: '#94a3b8', bodyColor: '#f1f5f9',
+      borderColor: '#334155', borderWidth: 1,
+    }},
+    scales: {
+      x: { ticks: { color: '#475569', font: { size: 10 }, maxTicksLimit: 8, maxRotation: 0 }, grid: { color: '#1e293b' } },
+      y: { ticks: { color: '#475569', font: { size: 10 } }, grid: { color: '#334155' } },
+    },
+  };
+
+  function mkChart(id, color) {
+    return new Chart(document.getElementById(id), {
+      type: 'line',
+      data: {
+        labels: [],
+        datasets: [{
+          data: [],
+          borderColor: color,
+          backgroundColor: color + '18',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 2,
+          pointHoverRadius: 4,
+          borderWidth: 2,
+        }],
+      },
+      options: CHART_DEFAULTS,
+    });
+  }
+
+  const charts = {
+    latency:  mkChart('chart-latency',  '#3b82f6'),
+    cpu:      mkChart('chart-cpu',      '#a855f7'),
+    memory:   mkChart('chart-memory',   '#06b6d4'),
+    requests: mkChart('chart-requests', '#22c55e'),
+  };
+
+  function fmtUptime(s) {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = Math.floor(s % 60);
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+  }
+
+  function fmtTime(ts) {
+    return new Date(ts * 1000).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+    } catch { return iso; }
+  }
+
+  async function updateMetrics() {
+    try {
+      const r = await fetch('/metrics');
+      if (!r.ok) return;
+      const d = await r.json();
+      document.getElementById('uptime').textContent      = fmtUptime(d.uptime_seconds);
+      document.getElementById('requests').textContent    = d.request_count.toLocaleString('pt-BR');
+      document.getElementById('predictions').textContent = d.prediction_count.toLocaleString('pt-BR');
+      document.getElementById('errors').textContent      = d.error_count.toLocaleString('pt-BR');
+      document.getElementById('avg-latency').textContent = d.avg_latency_ms.toFixed(1);
+      document.getElementById('memory').textContent      = d.memory_mb.toFixed(0);
+      document.getElementById('last-update').textContent = new Date().toLocaleTimeString('pt-BR');
+    } catch (e) { console.error('[metrics]', e); }
+  }
+
+  async function updateHistory() {
+    try {
+      const r = await fetch('/metrics/history');
+      if (!r.ok) return;
+      const pts = await r.json();
+      if (!pts.length) return;
+
+      const labels = pts.map(p => fmtTime(p.ts));
+      function push(chart, data) {
+        chart.data.labels = labels;
+        chart.data.datasets[0].data = data;
+        chart.update('none');
+      }
+      push(charts.latency,  pts.map(p => p.avg_latency_ms));
+      push(charts.cpu,      pts.map(p => p.cpu_percent));
+      push(charts.memory,   pts.map(p => p.memory_mb));
+      push(charts.requests, pts.map(p => p.request_count));
+    } catch (e) { console.error('[history]', e); }
+  }
+
+  async function loadTickers() {
+    try {
+      const r = await fetch('/models');
+      if (!r.ok) return;
+      const d = await r.json();
+      const symbols = d.available_models || [];
+      const tbody = document.getElementById('tickers-body');
+
+      if (!symbols.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color:#475569;padding:24px;text-align:center">Nenhum modelo disponível</td></tr>';
+        return;
+      }
+
+      const rows = await Promise.all(symbols.map(async sym => {
+        try {
+          const ir = await fetch(`/models/${sym}/info`);
+          if (!ir.ok) throw new Error(ir.status);
+          const info = await ir.json();
+          const m = info.metadata?.metrics || {};
+          const best = info.metadata?.best_model || '—';
+          const trainedAt = fmtDate(info.metadata?.trained_at_utc);
+          return `
+            <tr>
+              <td style="font-weight:600;color:#f1f5f9">${sym}</td>
+              <td><span class="badge badge-ok">OK</span></td>
+              <td>${m.mae ?? '—'}</td>
+              <td>${m.rmse ?? '—'}</td>
+              <td>${m.mape != null ? m.mape + '%' : '—'}</td>
+              <td style="color:#94a3b8;font-size:0.8rem">${best}</td>
+              <td style="color:#64748b;font-size:0.8rem">${trainedAt}</td>
+            </tr>`;
+        } catch {
+          return `<tr><td style="font-weight:600">${sym}</td><td><span class="badge badge-err">erro</span></td><td colspan="5">—</td></tr>`;
+        }
+      }));
+
+      tbody.innerHTML = rows.join('');
+    } catch (e) { console.error('[tickers]', e); }
+  }
+
+  async function tick() {
+    await updateMetrics();
+    await updateHistory();
+  }
+
+  tick();
+  loadTickers();
+  setInterval(tick, 15000);
+</script>
+</body>
+</html>

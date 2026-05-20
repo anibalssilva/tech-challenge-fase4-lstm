@@ -1,6 +1,9 @@
+import asyncio
 import logging
 import os
 import time
+from contextlib import asynccontextmanager
+from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Request
@@ -24,6 +27,24 @@ from app.schemas import (
 logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO"))
 logger = logging.getLogger(__name__)
 
+_SNAPSHOT_INTERVAL = int(os.getenv("METRICS_SNAPSHOT_INTERVAL", "30"))
+
+
+async def _metrics_recorder() -> None:
+    while True:
+        metrics_store.record_snapshot()
+        await asyncio.sleep(_SNAPSHOT_INTERVAL)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    task = asyncio.create_task(_metrics_recorder())
+    try:
+        yield
+    finally:
+        task.cancel()
+
+
 app = FastAPI(
     title="Tech Challenge Fase 4 - LSTM Stock Price API",
     description=(
@@ -31,6 +52,7 @@ app = FastAPI(
         "de ações."
     ),
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 
@@ -71,6 +93,11 @@ async def model_not_ready_handler(request: Request, exc: ModelNotReadyError):
             ),
         },
     )
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return JSONResponse(status_code=204, content=None)
 
 
 @app.get("/")
@@ -148,6 +175,17 @@ def model_info() -> dict[str, Any]:
 @app.get("/metrics")
 def metrics() -> dict[str, Any]:
     return metrics_store.snapshot()
+
+
+@app.get("/metrics/history")
+def metrics_history() -> list[dict[str, Any]]:
+    return metrics_store.history()
+
+
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard() -> str:
+    html_path = Path(__file__).parent / "dashboard.html"
+    return html_path.read_text(encoding="utf-8")
 
 
 @app.post("/predict", response_model=PredictResponse)
