@@ -5,7 +5,7 @@ from tensorflow.keras.optimizers import Adam
 
 def build_lstm_model(
     sequence_length: int,
-    lstm_units: int = 64,
+    lstm_units: int = 128,
     dropout: float = 0.2,
     learning_rate: float = 0.001,
     lstm_activation: str = "tanh",
