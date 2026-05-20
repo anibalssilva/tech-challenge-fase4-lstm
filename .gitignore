@@ -22,9 +22,6 @@ env/
 .ipynb_checkpoints/
 
 # --- Arquivos não essenciais ---
-models/model.keras
-models/scaler.pkl
-models/metadata.json
 app/main_backup_before_multiticker.py
 api.log
 docs/
