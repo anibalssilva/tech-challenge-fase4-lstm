@@ -1,0 +1,18 @@
+[
+  {
+    "model": "lstm_tanh",
+    "lstm_activation": "tanh",
+    "mae": 4.1823,
+    "rmse": 5.4282,
+    "mape": 2.2559,
+    "epochs_executed": 13
+  },
+  {
+    "model": "lstm_relu",
+    "lstm_activation": "relu",
+    "mae": 4.5613,
+    "rmse": 5.9139,
+    "mape": 2.4113,
+    "epochs_executed": 19
+  }
+]

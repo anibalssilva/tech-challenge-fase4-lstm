@@ -1,0 +1,58 @@
+{
+  "symbol": "MSFT",
+  "start_date": "2018-01-01",
+  "end_date": "2024-07-20",
+  "trained_at_utc": "2026-05-20T13:45:11.391294+00:00",
+  "sequence_length": 60,
+  "train_size": 0.8,
+  "epochs_requested": 40,
+  "epochs_executed": 22,
+  "batch_size": 32,
+  "lstm_units": 512,
+  "dropout": 0.2,
+  "learning_rate": 0.001,
+  "features": [
+    "Close"
+  ],
+  "rows_downloaded": 1647,
+  "rows_after_cleaning": 1647,
+  "train_samples": 1269,
+  "test_samples": 318,
+  "last_close": 437.11,
+  "models_tested": [
+    "tanh",
+    "relu"
+  ],
+  "best_model": "lstm_relu",
+  "best_activation": "relu",
+  "selection_metric": "rmse",
+  "metrics": {
+    "model": "lstm_relu",
+    "lstm_activation": "relu",
+    "mae": 6.4179,
+    "rmse": 7.8149,
+    "mape": 1.751,
+    "epochs_executed": 22
+  },
+  "all_models_metrics": [
+    {
+      "model": "lstm_tanh",
+      "lstm_activation": "tanh",
+      "mae": 8.0185,
+      "rmse": 9.8348,
+      "mape": 2.1288,
+      "epochs_executed": 13
+    },
+    {
+      "model": "lstm_relu",
+      "lstm_activation": "relu",
+      "mae": 6.4179,
+      "rmse": 7.8149,
+      "mape": 1.751,
+      "epochs_executed": 22
+    }
+  ],
+  "tensorflow_version": "2.18.1",
+  "numpy_version": "1.26.4",
+  "pandas_version": "2.2.2"
+}
