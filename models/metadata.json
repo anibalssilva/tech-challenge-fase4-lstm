@@ -2,7 +2,7 @@
   "symbol": "AAPL",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-20T19:50:28.684803+00:00",
+  "trained_at_utc": "2026-05-20T20:29:13.759768+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
