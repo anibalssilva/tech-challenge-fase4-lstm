@@ -1,0 +1,8 @@
+{
+  "model": "lstm_tanh",
+  "lstm_activation": "tanh",
+  "mae": 2.0442,
+  "rmse": 2.6516,
+  "mape": 2.1457,
+  "epochs_executed": 24
+}
