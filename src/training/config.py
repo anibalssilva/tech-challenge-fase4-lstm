@@ -10,7 +10,7 @@ class TrainingConfig:
     train_size: float = 0.8
     epochs: int = 40
     batch_size: int = 32
-    lstm_units: int = 64
+    lstm_units: int = 128
     dropout: float = 0.2
     learning_rate: float = 0.001
     model_dir: str = "models"
