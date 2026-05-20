@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class TrainingConfig:
-    symbol: str = "DIS"
+    symbol: str = "AAPL"
     start_date: str = "2018-01-01"
     end_date: str = "2024-07-20"
     sequence_length: int = 60
