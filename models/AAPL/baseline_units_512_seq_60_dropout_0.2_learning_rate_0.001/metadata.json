@@ -2,7 +2,7 @@
   "symbol": "AAPL",
   "start_date": "2018-01-01",
   "end_date": "2024-07-20",
-  "trained_at_utc": "2026-05-20T13:52:53.212614+00:00",
+  "trained_at_utc": "2026-05-20T14:49:58.071335+00:00",
   "sequence_length": 60,
   "train_size": 0.8,
   "epochs_requested": 40,
@@ -46,9 +46,9 @@
     {
       "model": "lstm_relu",
       "lstm_activation": "relu",
-      "mae": 4.5613,
-      "rmse": 5.9139,
-      "mape": 2.4113,
+      "mae": 4.4955,
+      "rmse": 5.834,
+      "mape": 2.3771,
       "epochs_executed": 19
     }
   ],
